@@ -1,0 +1,303 @@
+{
+  "project": "d-friend",
+  "branchName": "ralph/desktop-pet-system",
+  "description": "Desktop Pet System - 基于 Electron 的桌面宠物应用，支持待机/行走/跳跃/拖拽/坠落等行为，采用插件式行为架构",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "搭建 Electron + TypeScript 项目骨架",
+      "description": "As a developer, I need an Electron + TypeScript project scaffold with transparent, frameless, always-on-top window so that all pet features can be built on top of it.",
+      "acceptanceCriteria": [
+        "Initialize project with package.json, tsconfig.json, and Vite as bundler",
+        "Electron main process written in TypeScript",
+        "Main window configured: transparent background, frameless, always-on-top, skip-taskbar",
+        "Window covers full primary screen for free movement",
+        "Mouse click-through enabled on non-pet areas using setIgnoreMouseEvents(true, { forward: true })",
+        "npm run dev starts the app and shows a placeholder circle sprite",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "动画渲染层：Lottie/SVG 播放器组件",
+      "description": "As a developer, I need an animation player component that can load, play, loop, and switch animation clips so that behaviors can trigger visual feedback.",
+      "acceptanceCriteria": [
+        "Create AnimationPlayer class/component supporting Lottie JSON or SVG sprite sheets",
+        "API: play(clipName), stop(), setLoop(boolean), onComplete callback",
+        "Switching clips has no visible flicker or position jump",
+        "Include one placeholder idle-breathing animation asset for testing",
+        "Render the animation in the Electron renderer process",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "事件总线 (EventBus)",
+      "description": "As a developer, I need a typed event bus for decoupled communication between behaviors and system modules.",
+      "acceptanceCriteria": [
+        "Implement EventBus with on(event, handler), off(event, handler), emit(event, payload)",
+        "Typed events via TypeScript generics or event map interface",
+        "Predefined event types: mouse:down, mouse:up, mouse:move, edge:hit, behavior:changed",
+        "Unit tests: subscribe, emit, unsubscribe, multiple listeners",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "行为接口与注册表 (Behavior interface + BehaviorRegistry)",
+      "description": "As a developer, I need a Behavior plugin interface and registry so that behaviors can be independently registered and discovered.",
+      "acceptanceCriteria": [
+        "Define Behavior interface: id, priority, enter(ctx), update(ctx, dt), exit(ctx), canTransitionTo(nextId)",
+        "Define BehaviorContext type containing: position, velocity, animationPlayer, eventBus, config",
+        "Implement BehaviorRegistry: register(behavior), unregister(id), get(id), getAll()",
+        "Include one no-op ExampleBehavior to prove registration works",
+        "Unit tests: register, unregister, duplicate-id rejection",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "行为状态机 (BehaviorStateMachine)",
+      "description": "As a developer, I need a state machine that manages the current behavior, handles transitions, and respects priority.",
+      "acceptanceCriteria": [
+        "Implement BehaviorStateMachine: start(initialBehaviorId), requestTransition(id, reason), getCurrentBehavior()",
+        "On transition: call current.exit(), then next.enter()",
+        "Higher priority behaviors can interrupt lower priority ones",
+        "Lower priority cannot interrupt higher unless current behavior allows via canTransitionTo",
+        "Emit behavior:changed event on EventBus after each transition",
+        "Unit tests: normal transition, priority preemption, rejected transition",
+        "Typecheck passes"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "屏幕边界感知模块",
+      "description": "As a developer, I need a module that provides screen bounds and taskbar position so behaviors can respect physical edges.",
+      "acceptanceCriteria": [
+        "Use Electron screen API to get primary display workArea (x, y, width, height)",
+        "Expose getGroundY(): number returning the Y coordinate of the ground (top of taskbar)",
+        "Expose getBounds(): { left, right, top, bottom } for movement clamping",
+        "Listen for display-metrics-changed and update bounds automatically",
+        "Unit tests with mocked screen data",
+        "Typecheck passes"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-007",
+      "title": "待机行为 (IdleBehavior)",
+      "description": "As a user, I want the pet to show a natural idle state with occasional micro-animations when nothing is happening.",
+      "acceptanceCriteria": [
+        "Implement IdleBehavior registered with priority 0 (lowest)",
+        "On enter: play idle-breathing loop animation",
+        "Every 5-15 seconds (random), trigger a micro-action animation (yawn, look around)",
+        "Pet position remains unchanged during idle",
+        "canTransitionTo returns true for any behavior (can always be interrupted)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-008",
+      "title": "行走行为 (WalkBehavior)",
+      "description": "As a user, I want the pet to walk around the screen on its own so it feels alive.",
+      "acceptanceCriteria": [
+        "Implement WalkBehavior: pick a random target X on the ground, move toward it at 60-120 px/s",
+        "Flip sprite horizontally based on movement direction",
+        "Play walk animation loop during movement",
+        "Stop and transition to IdleBehavior when target reached",
+        "Clamp movement within screen bounds (getBounds())",
+        "canTransitionTo returns true for higher-priority behaviors (Drag)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-009",
+      "title": "跳跃行为 (JumpBehavior)",
+      "description": "As a user, I want the pet to occasionally jump to make the scene more lively.",
+      "acceptanceCriteria": [
+        "Implement JumpBehavior: parabolic arc trajectory (configurable height and horizontal distance)",
+        "Play jump-start animation on launch, jump-land animation on landing",
+        "Landing detected when Y >= groundY",
+        "After landing, transition to IdleBehavior",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 9,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-010",
+      "title": "拖拽行为 (DragBehavior)",
+      "description": "As a user, I want to grab the pet with my mouse and drag it anywhere on screen.",
+      "acceptanceCriteria": [
+        "Implement DragBehavior with highest priority (100)",
+        "Enter on mouse:down event over pet sprite hit area",
+        "Pet position follows mouse position with no perceptible lag",
+        "Play grabbed/surprised animation during drag",
+        "On mouse:up: calculate release velocity from last N mouse positions",
+        "If release velocity < threshold -> transition to IdleBehavior",
+        "If release velocity >= threshold -> transition to FallBehavior",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 10,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-011",
+      "title": "坠落行为 (FallBehavior)",
+      "description": "As a user, when I release the pet from a height it should fall naturally with gravity.",
+      "acceptanceCriteria": [
+        "Implement FallBehavior: apply gravity acceleration (configurable, default ~980 px/s²)",
+        "Pet falls vertically until reaching groundY",
+        "On landing: play impact animation with slight bounce (1-2 small bounces)",
+        "After bounce settles, transition to IdleBehavior",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 11,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-012",
+      "title": "鼠标交互事件桥接",
+      "description": "As a developer, I need mouse events from the Electron window to be bridged into the EventBus so behaviors can react to user input.",
+      "acceptanceCriteria": [
+        "Listen for mousedown, mouseup, mousemove on the pet sprite element",
+        "Emit mouse:down, mouse:up, mouse:move events on EventBus with coordinates",
+        "Toggle setIgnoreMouseEvents based on whether cursor is over pet hit area",
+        "Track mouse velocity (last 5 positions) for release-speed calculation",
+        "Typecheck passes"
+      ],
+      "priority": 12,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-013",
+      "title": "用户点击响应（单击/双击/右键）",
+      "description": "As a user, I want clicking the pet to produce feedback so it feels interactive and companionable.",
+      "acceptanceCriteria": [
+        "Single click: play a happy/petted animation then return to previous behavior",
+        "Double click: trigger JumpBehavior",
+        "Right click: show context menu with items: Exit, Hide 30min (placeholder), Settings (placeholder)",
+        "Context menu uses Electron Menu API",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 13,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-014",
+      "title": "自动行为调度器 (AutoScheduler)",
+      "description": "As a user, I want the pet to naturally cycle between idle, walk, and jump on its own when I'm not interacting with it.",
+      "acceptanceCriteria": [
+        "Implement AutoScheduler: when current behavior completes, pick next by weighted random",
+        "Default weights configurable: Idle 60%, Walk 30%, Jump 10%",
+        "Cooldown per behavior (e.g., Jump cannot trigger again within 20s)",
+        "Pause scheduling for N seconds after any user interaction (click/drag)",
+        "AutoScheduler is a standalone module, does not import specific behaviors",
+        "Unit tests: weight distribution over many iterations, cooldown enforcement, interaction pause",
+        "Typecheck passes"
+      ],
+      "priority": 14,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-015",
+      "title": "配置持久化 (ConfigStore)",
+      "description": "As a user, I want my preferences (walk speed, behavior weights) to be saved between sessions.",
+      "acceptanceCriteria": [
+        "Store config in user data directory as config.json (use Electron app.getPath('userData'))",
+        "Implement ConfigStore: get(key, default), set(key, value), onChange(key, callback)",
+        "Generate default config on first launch",
+        "Behaviors read their parameters from ConfigStore",
+        "Typecheck passes"
+      ],
+      "priority": 15,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-016",
+      "title": "系统托盘与应用生命周期",
+      "description": "As a user, I want the pet app to live in the system tray so I can show/hide/quit it easily.",
+      "acceptanceCriteria": [
+        "Create system tray icon with context menu: Show Pet, Hide Pet, Quit",
+        "Closing the window hides to tray instead of quitting",
+        "Tray double-click toggles pet visibility",
+        "App correctly cleans up on quit (save config, dispose resources)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 16,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-017",
+      "title": "边缘碰撞处理（转身/反弹）",
+      "description": "As a user, I want the pet to turn around or bounce when hitting screen edges so it never disappears off-screen.",
+      "acceptanceCriteria": [
+        "During WalkBehavior: if pet reaches left/right edge, flip direction and continue or transition to Idle",
+        "During FallBehavior: clamp horizontal position within bounds",
+        "Edge collision emits edge:hit event on EventBus",
+        "Behavior is configurable: bounce vs turn-around (default: turn-around)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 17,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-018",
+      "title": "游戏循环与性能优化",
+      "description": "As a developer, I need a stable game loop driving behavior updates at consistent frame rate with low resource usage.",
+      "acceptanceCriteria": [
+        "Implement game loop using requestAnimationFrame with delta-time calculation",
+        "Call currentBehavior.update(ctx, dt) each frame",
+        "When pet is idle and no animation playing, reduce update frequency (e.g., skip frames or use setTimeout fallback)",
+        "CPU usage < 2% during idle state on mid-range laptop",
+        "Memory usage < 200MB",
+        "No memory leaks after 1 hour of running (verify via DevTools heap snapshot)",
+        "Typecheck passes"
+      ],
+      "priority": 18,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}
