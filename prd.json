@@ -115,8 +115,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 7,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2025-05-13. IdleBehavior with random timeout (3-8s) then transition to walk. 5 unit tests."
     },
     {
       "id": "US-008",
@@ -133,8 +133,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 8,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2025-05-13. WalkBehavior with edge detection, direction flip, random duration. 7 unit tests."
     },
     {
       "id": "US-009",
@@ -149,8 +149,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 9,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2025-05-13. JumpBehavior with parabolic arc, gravity, landing detection. 7 unit tests."
     },
     {
       "id": "US-010",
@@ -168,8 +168,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 10,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2025-05-13. DragBehavior with priority 100, mouse tracking, velocity calculation, transition to fall. 6 unit tests."
     },
     {
       "id": "US-011",
@@ -184,8 +184,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 11,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2025-05-13. FallBehavior with gravity, bounce damping, settle detection. 6 unit tests."
     },
     {
       "id": "US-012",
@@ -199,8 +199,8 @@
         "Typecheck passes"
       ],
       "priority": 12,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2025-05-13. MouseBridge with event bridging, velocity tracking (last 5 positions), jsdom tests. BehaviorScheduler with weighted random transitions. 4+5 unit tests."
     },
     {
       "id": "US-013",

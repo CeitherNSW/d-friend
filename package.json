@@ -12,20 +12,25 @@
     "test:watch": "vitest",
     "preview": "vite preview"
   },
-  "keywords": ["desktop-pet", "electron", "typescript"],
+  "keywords": [
+    "desktop-pet",
+    "electron",
+    "typescript"
+  ],
   "author": "CeitherNSW",
   "license": "MIT",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0",
+    "eslint": "^9.0.0",
+    "jsdom": "^29.1.1",
     "typescript": "^5.5.0",
     "vite": "^6.0.0",
     "vite-plugin-electron": "^0.28.0",
     "vite-plugin-electron-renderer": "^0.14.0",
-    "vitest": "^3.0.0",
-    "electron": "^33.0.0",
-    "electron-builder": "^25.0.0",
-    "eslint": "^9.0.0",
-    "@typescript-eslint/parser": "^8.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.0.0"
+    "vitest": "^3.0.0"
   },
   "dependencies": {
     "lottie-web": "^5.12.2"

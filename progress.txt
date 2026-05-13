@@ -31,6 +31,35 @@
 - vite.config.ts, vitest.config.ts, tsconfig.json — tooling
 
 ### Next Up
-- US-007: IdleBehavior (待机行为)
-- US-008: WalkBehavior (行走行为)
-- US-009: JumpBehavior (跳跃行为)
+- US-013: 用户点击响应（单击/双击/右键）
+- US-014: 自动启动与系统托盘
+- US-015: 配置持久化
+
+## Iteration 2 — 2025-05-13
+
+### Completed Stories
+- US-007 ✅ IdleBehavior (idle animation, random 3-8s timeout → walk)
+- US-008 ✅ WalkBehavior (horizontal movement, edge detection, direction flip)
+- US-009 ✅ JumpBehavior (parabolic arc, gravity, landing → idle)
+- US-010 ✅ DragBehavior (priority 100, mouse follow, release → fall)
+- US-011 ✅ FallBehavior (gravity, bounce damping, settle → idle)
+- US-012 ✅ MouseBridge + BehaviorScheduler (event bridging, weighted random scheduling)
+
+### Test Results
+- 66 tests passing (12 test files)
+- Typecheck clean
+
+### Files Created
+- src/behaviors/idle-behavior.ts — IdleBehavior
+- src/behaviors/walk-behavior.ts — WalkBehavior
+- src/behaviors/jump-behavior.ts — JumpBehavior
+- src/behaviors/drag-behavior.ts — DragBehavior
+- src/behaviors/fall-behavior.ts — FallBehavior
+- src/behaviors/index.ts — barrel export
+- src/core/behavior-scheduler.ts — BehaviorScheduler (weighted random)
+- src/render/mouse-bridge.ts — MouseBridge (DOM event → EventBus)
+
+### Next Up
+- US-013: 用户点击响应（单击/双击/右键）
+- US-014: 自动启动与系统托盘
+- US-015: 配置持久化
