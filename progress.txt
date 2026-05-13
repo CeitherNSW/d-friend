@@ -1,5 +1,36 @@
 # Ralph Progress Log
 # Project: d-friend (Desktop Pet System)
 # Branch: ralph/desktop-pet-system
-# Started: 2026-05-13
+# Started: 2025-05-13
 
+## Iteration 1 — 2025-05-13
+
+### Completed Stories
+- US-001 ✅ Electron + TypeScript 项目骨架 (transparent, frameless, always-on-top window)
+- US-002 ✅ AnimationPlayer (lottie-web wrapper with play/stop/setLoop/onComplete)
+- US-003 ✅ EventBus (typed pub/sub with EventMap interface)
+- US-004 ✅ Behavior interface + BehaviorRegistry (plugin registration)
+- US-005 ✅ BehaviorStateMachine (priority-based transitions)
+- US-006 ✅ ScreenBoundsProvider (workArea bounds + groundY)
+
+### Test Results
+- 26 tests passing (5 test files)
+- Typecheck clean
+- `npm run dev` launches Electron window with placeholder sprite
+
+### Files Created
+- src/core/event-bus.ts — typed EventBus
+- src/core/types.ts — Behavior, BehaviorContext, Position, Velocity, etc.
+- src/core/behavior-registry.ts — BehaviorRegistry
+- src/core/state-machine.ts — BehaviorStateMachine
+- src/core/screen-bounds.ts — ScreenBoundsProvider
+- src/render/animation-player.ts — AnimationPlayer (lottie-web)
+- src/platform/main.ts — Electron main process
+- src/platform/preload.ts — context bridge
+- index.html — renderer entry
+- vite.config.ts, vitest.config.ts, tsconfig.json — tooling
+
+### Next Up
+- US-007: IdleBehavior (待机行为)
+- US-008: WalkBehavior (行走行为)
+- US-009: JumpBehavior (跳跃行为)

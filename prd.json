@@ -17,8 +17,8 @@
         "Typecheck passes"
       ],
       "priority": 1,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2025-05-13. Electron main process, transparent window, Vite bundler, placeholder circle sprite all working."
     },
     {
       "id": "US-002",
@@ -34,8 +34,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 2,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2025-05-13. AnimationPlayer class with lottie-web integration, play/stop/setLoop/onComplete API. 5 unit tests passing."
     },
     {
       "id": "US-003",
@@ -49,8 +49,8 @@
         "Typecheck passes"
       ],
       "priority": 3,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2025-05-13. Typed EventBus with EventMap interface, 5 unit tests passing."
     },
     {
       "id": "US-004",
@@ -65,8 +65,8 @@
         "Typecheck passes"
       ],
       "priority": 4,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2025-05-13. Behavior interface + BehaviorRegistry with register/unregister/get/getAll/has. 5 unit tests passing."
     },
     {
       "id": "US-005",
@@ -82,8 +82,8 @@
         "Typecheck passes"
       ],
       "priority": 5,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2025-05-13. BehaviorStateMachine with priority-based transitions, 7 unit tests passing."
     },
     {
       "id": "US-006",
@@ -98,8 +98,8 @@
         "Typecheck passes"
       ],
       "priority": 6,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2025-05-13. ScreenBoundsProvider with getBounds/getGroundY/update. 4 unit tests passing."
     },
     {
       "id": "US-007",
