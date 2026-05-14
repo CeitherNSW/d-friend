@@ -35,6 +35,32 @@
 - US-014: 自动启动与系统托盘
 - US-015: 配置持久化
 
+## Iteration 3 - 2026-05-14
+
+### Completed Stories
+- US-016: System tray and application lifecycle integration
+  - Added TrayController for Electron Tray/Menu integration.
+  - Tray menu supports Show Pet, Hide Pet, and Quit.
+  - Closing the pet window hides it to tray instead of quitting.
+  - Tray double-click toggles pet visibility.
+  - App starts hidden and remains available from the tray.
+  - Quit action destroys the tray and exits the app.
+
+### Test Results
+- 80 tests passing (16 test files)
+- Typecheck clean
+- Production build passes
+- Lint remains blocked by missing ESLint 9 flat config (`eslint.config.*`)
+
+### Files Created
+- src/platform/tray-controller.ts
+- src/platform/tray-controller.test.ts
+
+### Next Up
+- US-013: Click responses (single click / double click / right-click menu)
+- US-015: ConfigStore persistence
+- US-018: Game loop and idle performance baseline
+
 ## Iteration 2 — 2025-05-13
 
 ### Completed Stories

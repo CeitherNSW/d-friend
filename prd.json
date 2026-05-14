@@ -263,8 +263,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 16,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2026-05-14. Added TrayController, system tray menu (Show Pet / Hide Pet / Quit), close-to-tray lifecycle, tray double-click toggle, startup hidden-to-tray behavior, and tray cleanup on quit. 4 tray-controller tests passing."
     },
     {
       "id": "US-017",

@@ -33,12 +33,17 @@ describe('IdleBehavior', () => {
   });
 
   it('should request transition to walk after timeout', () => {
-    const behavior = new IdleBehavior();
-    const ctx = createCtx();
-    behavior.enter(ctx);
-    // Simulate enough time passing (max is 8000ms)
-    behavior.update(ctx, 9000);
-    expect(ctx.requestTransition).toHaveBeenCalledWith('walk', 'idle-timeout');
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0);
+    try {
+      const behavior = new IdleBehavior();
+      const ctx = createCtx();
+      behavior.enter(ctx);
+      // Simulate enough time passing for the minimum idle duration.
+      behavior.update(ctx, 8000);
+      expect(ctx.requestTransition).toHaveBeenCalledWith('walk', 'idle-timeout');
+    } finally {
+      random.mockRestore();
+    }
   });
 
   it('should not transition before timeout', () => {
