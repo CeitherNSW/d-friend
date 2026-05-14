@@ -13,6 +13,20 @@ function createPetElement(): HTMLElement {
 }
 
 describe('PetRuntime', () => {
+  it('should expose idle state for the breathing animation', () => {
+    const pet = createPetElement();
+    const runtime = createPetRuntime(pet, {
+      viewport: { width: 1000, height: 800 },
+      animation: { play: vi.fn(), stop: vi.fn(), setLoop: vi.fn() },
+    });
+
+    expect(runtime.getCurrentBehaviorId()).toBe('idle');
+    expect(pet.dataset.behavior).toBe('idle');
+    expect(pet.classList.contains('is-idle')).toBe(true);
+
+    runtime.destroy();
+  });
+
   it('should enter drag and render the pet without losing the grab offset', () => {
     const pet = createPetElement();
     const runtime = createPetRuntime(pet, {
@@ -30,6 +44,8 @@ describe('PetRuntime', () => {
     runtime.step(16);
 
     expect(runtime.getCurrentBehaviorId()).toBe('drag');
+    expect(pet.dataset.behavior).toBe('drag');
+    expect(pet.classList.contains('is-idle')).toBe(false);
     expect(pet.style.left).toBe('580px');
     expect(pet.style.top).toBe('600px');
 

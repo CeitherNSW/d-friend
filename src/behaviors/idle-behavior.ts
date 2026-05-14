@@ -1,7 +1,7 @@
 import { Behavior, BehaviorContext } from '../core/types';
 
-const IDLE_MIN_DURATION = 3000;
-const IDLE_MAX_DURATION = 8000;
+const IDLE_MIN_DURATION = 8000;
+const IDLE_MAX_DURATION = 18000;
 
 export class IdleBehavior implements Behavior {
   id = 'idle';

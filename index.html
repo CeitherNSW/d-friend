@@ -16,12 +16,33 @@
       bottom: 0;
       left: 50%;
       transform: translateX(-50%);
+      transform-origin: 50% 100%;
       width: 80px;
       height: 80px;
       border-radius: 50%;
       background: radial-gradient(circle, #ffb347, #ff6f61);
       box-shadow: 0 4px 12px rgba(255, 111, 97, 0.4);
       cursor: grab;
+    }
+    #pet[data-behavior="idle"] {
+      animation: idle-breathing 2.4s ease-in-out infinite;
+    }
+    #pet[data-behavior="drag"] {
+      cursor: grabbing;
+    }
+    @keyframes idle-breathing {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 4px 12px rgba(255, 111, 97, 0.4);
+      }
+      45% {
+        transform: scaleX(1.08) scaleY(0.94);
+        box-shadow: 0 8px 18px rgba(255, 111, 97, 0.55);
+      }
+      70% {
+        transform: scaleX(0.98) scaleY(1.04);
+        box-shadow: 0 3px 10px rgba(255, 111, 97, 0.35);
+      }
     }
   </style>
 </head>

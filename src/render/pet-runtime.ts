@@ -99,6 +99,9 @@ export function createPetRuntime(pet: HTMLElement, options: PetRuntimeOptions = 
     const size = getPetSize(pet);
     const x = clamp(ctx.position.x, ctx.bounds.left, ctx.bounds.right);
     const y = clamp(ctx.position.y, ctx.bounds.top + size.height, ctx.bounds.groundY);
+    const behaviorId = stateMachine.getCurrentBehavior()?.id ?? '';
+    pet.dataset.behavior = behaviorId;
+    pet.classList.toggle('is-idle', behaviorId === 'idle');
     pet.style.left = `${x - size.width / 2}px`;
     pet.style.top = `${y - size.height}px`;
   }
