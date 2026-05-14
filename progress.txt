@@ -53,6 +53,7 @@
 - Lint remains blocked by missing ESLint 9 flat config (`eslint.config.*`)
 
 ### Files Created
+- docs/system-integration.md
 - src/platform/tray-controller.ts
 - src/platform/tray-controller.test.ts
 
