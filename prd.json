@@ -35,7 +35,7 @@
       ],
       "priority": 2,
       "passes": true,
-      "notes": "Completed 2025-05-13. AnimationPlayer class with lottie-web integration, play/stop/setLoop/onComplete API. 5 unit tests passing."
+      "notes": "Completed 2025-05-13; updated 2026-05-14. AnimationPlayer supports sprite-first PNG frame playback with lottie-web fallback, play/stop/setLoop/onComplete API, and renderer sprite mounting tests."
     },
     {
       "id": "US-003",
@@ -134,7 +134,7 @@
       ],
       "priority": 8,
       "passes": true,
-      "notes": "Completed 2025-05-13. WalkBehavior with edge detection, direction flip, random duration. 7 unit tests."
+      "notes": "Completed 2025-05-13; updated 2026-05-14. WalkBehavior with edge detection, direction flip, random duration, and renderer sprite mirroring for right-facing walk."
     },
     {
       "id": "US-009",

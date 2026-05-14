@@ -1,0 +1,42 @@
+{
+  "source": "assets/d-friend.png",
+  "frameSize": {
+    "width": 512,
+    "height": 896
+  },
+  "frameDurationMs": 180,
+  "frames": [
+    {
+      "name": "idle_01",
+      "file": "assets/sprites/idle_01.png"
+    },
+    {
+      "name": "idle_02",
+      "file": "assets/sprites/idle_02.png"
+    },
+    {
+      "name": "petting_01",
+      "file": "assets/sprites/petting_01.png"
+    },
+    {
+      "name": "petting_02",
+      "file": "assets/sprites/petting_02.png"
+    },
+    {
+      "name": "jump_01",
+      "file": "assets/sprites/jump_01.png"
+    },
+    {
+      "name": "jump_02",
+      "file": "assets/sprites/jump_02.png"
+    }
+  ],
+  "clips": {
+    "idle": ["idle_01", "idle_02"],
+    "walk": ["idle_01", "idle_02"],
+    "happy": ["petting_01", "petting_02"],
+    "jump": ["jump_01", "jump_02"],
+    "drag": ["idle_01"],
+    "fall": ["jump_02"]
+  }
+}

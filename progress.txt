@@ -3,6 +3,29 @@
 # Branch: ralph/desktop-pet-system
 # Started: 2025-05-13
 
+## Iteration 5 - 2026-05-14
+
+### Completed Work
+- Sprite animation engine
+  - `AnimationPlayer` now attempts sprite clips first and falls back to Lottie when a clip is missing.
+  - Sprite clips support looping, non-looping completion, default/per-frame duration, and delayed `setLoop(false)` calls from behavior enter methods.
+  - `src/render/sprite-assets.ts` bundles generated PNG frames through Vite imports.
+  - `index.html` now uses a transparent 96x168 sprite hit area instead of the round placeholder ball.
+- Validation sprite frames
+  - Added idle, petting, and jump validation frames under `assets/sprites/`.
+  - Added `assets/sprites/manifest.json` with frame metadata and clip mappings.
+
+### Test Results
+- 105 tests passing (19 test files)
+- Typecheck clean
+- Production build passes
+- Lint remains blocked by missing ESLint 9 flat config (`eslint.config.*`)
+
+### Next Up
+- Draw dedicated walk, drag, fall, and richer idle micro-action frame sets.
+- Replace temporary clip reuse in `src/render/sprite-assets.ts` once those frames exist.
+- Add left/right specific frames only if mirrored sprites are visually insufficient.
+
 ## Iteration 1 — 2025-05-13
 
 ### Completed Stories

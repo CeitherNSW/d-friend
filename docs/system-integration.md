@@ -32,9 +32,18 @@ This document records the current Electron platform integration behavior.
 - `BehaviorScheduler` is active in `PetRuntime`, uses default weights `Idle 60 / Walk 30 / Jump 10`, skips cooling-down behaviors, and pauses after click or drag interactions.
 - Idle, walk, jump, and fall behavior parameters are read through the runtime config reader.
 
+## Sprite Animation Runtime
+
+- `src/render/animation-player.ts` now resolves clips through a sprite manifest first and falls back to `lottie-web` only when a clip is not present in the manifest.
+- `src/render/sprite-assets.ts` imports PNG frames from `assets/sprites/` so Vite fingerprints and bundles them with the renderer.
+- The default clips are `idle`, `walk`, `happy`, `jump`, `drag`, and `fall`; temporary fallback mappings reuse available validation frames until dedicated frames are drawn.
+- Sprite playback uses an absolutely positioned `<img class="pet-sprite-frame">` inside `#pet`, supports looping/non-looping clips, per-frame/default durations, and `onComplete` for non-looping playback.
+- `index.html` defines `#pet` as a transparent 96x168 sprite hit area and keeps the idle breathing effect as a subtle transform/drop-shadow animation on the whole character.
+- `PetRuntime` writes `data-direction="right"` or `data-direction="left"` while walking; the sprite image is horizontally flipped only for the right-facing state.
+
 ## Verification
 
 - `npm run typecheck` passes.
-- `npm test` passes with 98 tests across 19 test files.
+- `npm test` passes with 105 tests across 19 test files.
 - `npm run build` passes.
 - `npm run lint` is currently blocked because the project has ESLint 9 installed but no `eslint.config.*` flat config.

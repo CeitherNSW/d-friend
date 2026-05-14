@@ -15,19 +15,16 @@
       position: absolute;
       bottom: 0;
       left: 50%;
-      transform: translateX(-50%);
       transform-origin: 50% 100%;
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #ffb347, #ff6f61);
-      box-shadow: 0 4px 12px rgba(255, 111, 97, 0.4);
+      width: 96px;
+      height: 168px;
       cursor: grab;
-      transition: background 0.3s, box-shadow 0.3s;
+      overflow: visible;
+      filter: drop-shadow(0 6px 10px rgba(70, 35, 20, 0.24));
+      transition: filter 0.2s ease;
     }
     #pet[data-behavior="petting"] {
-      background: radial-gradient(circle, #f8a0c8, #e8709a);
-      box-shadow: 0 4px 12px rgba(232, 112, 154, 0.5);
+      filter: drop-shadow(0 8px 14px rgba(232, 112, 154, 0.45));
     }
     #pet[data-behavior="idle"] {
       animation: idle-breathing 2.4s ease-in-out infinite;
@@ -35,18 +32,26 @@
     #pet[data-behavior="drag"] {
       cursor: grabbing;
     }
+    #pet .pet-sprite-frame {
+      display: block;
+      image-rendering: auto;
+      transform-origin: 50% 50%;
+    }
+    #pet[data-direction="right"] .pet-sprite-frame {
+      transform: scaleX(-1);
+    }
     @keyframes idle-breathing {
       0%, 100% {
         transform: scale(1);
-        box-shadow: 0 4px 12px rgba(255, 111, 97, 0.4);
+        filter: drop-shadow(0 6px 10px rgba(70, 35, 20, 0.24));
       }
       45% {
-        transform: scaleX(1.08) scaleY(0.94);
-        box-shadow: 0 8px 18px rgba(255, 111, 97, 0.55);
+        transform: scaleX(1.04) scaleY(0.97);
+        filter: drop-shadow(0 9px 14px rgba(70, 35, 20, 0.3));
       }
       70% {
-        transform: scaleX(0.98) scaleY(1.04);
-        box-shadow: 0 3px 10px rgba(255, 111, 97, 0.35);
+        transform: scaleX(0.99) scaleY(1.02);
+        filter: drop-shadow(0 5px 8px rgba(70, 35, 20, 0.2));
       }
     }
   </style>

@@ -123,6 +123,9 @@ export function createPetRuntime(pet: HTMLElement, options: PetRuntimeOptions = 
     const y = clamp(ctx.position.y, ctx.bounds.top + size.height, ctx.bounds.groundY);
     const behaviorId = stateMachine.getCurrentBehavior()?.id ?? '';
     pet.dataset.behavior = behaviorId;
+    if (behaviorId === 'walk' && Math.abs(ctx.velocity.x) > 0.01) {
+      pet.dataset.direction = ctx.velocity.x > 0 ? 'right' : 'left';
+    }
     pet.classList.toggle('is-idle', behaviorId === 'idle');
     pet.style.left = `${x - size.width / 2}px`;
     pet.style.top = `${y - size.height}px`;

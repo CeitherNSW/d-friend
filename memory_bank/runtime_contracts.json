@@ -1,4 +1,21 @@
 {
+  "animation": {
+    "player": "src/render/animation-player.ts",
+    "defaultManifest": "src/render/sprite-assets.ts",
+    "assetManifest": "assets/sprites/manifest.json",
+    "mode": "Sprite clips are attempted first; missing clips fall back to lottie-web with ./assets/{clip}.json.",
+    "defaultClips": {
+      "idle": ["idle_01", "idle_02"],
+      "walk": ["idle_01", "idle_02"],
+      "happy": ["petting_01", "petting_02"],
+      "jump": ["jump_01", "jump_02"],
+      "drag": ["idle_01"],
+      "fall": ["jump_02"]
+    },
+    "container": "#pet is a transparent 96x168 hit area; AnimationPlayer mounts one absolutely positioned img.pet-sprite-frame inside it.",
+    "direction": "PetRuntime writes data-direction while walking from ctx.velocity.x; data-direction=right flips img.pet-sprite-frame with scaleX(-1), data-direction=left keeps the source orientation.",
+    "timing": "Default sprite frame duration is 180ms; individual frames may override durationMs."
+  },
   "config": {
     "store": "src/platform/config-store.ts",
     "file": "app.getPath('userData')/config.json",

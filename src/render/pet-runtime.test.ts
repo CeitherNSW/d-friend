@@ -145,6 +145,23 @@ describe('PetRuntime', () => {
     runtime.destroy();
   });
 
+  it('should mark the sprite direction as right while walking with positive horizontal velocity', () => {
+    const pet = createPetElement();
+    const runtime = createPetRuntime(pet, {
+      viewport: { width: 1000, height: 800 },
+      animation: { play: vi.fn(), stop: vi.fn(), setLoop: vi.fn() },
+    });
+
+    runtime.ctx.requestTransition('walk', 'test');
+    runtime.ctx.velocity.x = 80;
+    runtime.step(16);
+
+    expect(runtime.getCurrentBehaviorId()).toBe('walk');
+    expect(pet.dataset.direction).toBe('right');
+
+    runtime.destroy();
+  });
+
   it('should keep mouse events enabled while dragging outside the pet element', () => {
     const pet = createPetElement();
     const passthrough = { setIgnoreMouseEvents: vi.fn() };

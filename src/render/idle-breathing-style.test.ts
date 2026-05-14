@@ -9,4 +9,11 @@ describe('idle breathing style', () => {
     expect(html).toContain('#pet[data-behavior="idle"]');
     expect(html).toContain('animation: idle-breathing');
   });
+
+  it('should flip the sprite frame when walking to the right', () => {
+    const html = readFileSync('index.html', 'utf8');
+
+    expect(html).toContain('#pet[data-direction="right"] .pet-sprite-frame');
+    expect(html).toContain('scaleX(-1)');
+  });
 });
