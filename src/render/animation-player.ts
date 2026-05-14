@@ -9,6 +9,7 @@ export class AnimationPlayer implements AnimationControl {
   private onCompleteCallback: AnimationCompleteCallback | null = null;
   private container: HTMLElement | null = null;
   private animationInstance: any = null;
+  private loadToken = 0;
 
   constructor(container?: HTMLElement) {
     this.container = container ?? null;
@@ -22,15 +23,17 @@ export class AnimationPlayer implements AnimationControl {
     if (this.currentClip === clip && this.playing) return;
 
     this.stop();
+    const token = ++this.loadToken;
     this.currentClip = clip;
     this.playing = true;
 
     if (this.container && typeof window !== 'undefined') {
-      this.loadAndPlay(clip);
+      this.loadAndPlay(clip, token);
     }
   }
 
   stop(): void {
+    this.loadToken++;
     this.playing = false;
     if (this.animationInstance) {
       this.animationInstance.destroy();
@@ -57,14 +60,14 @@ export class AnimationPlayer implements AnimationControl {
     return this.playing;
   }
 
-  private async loadAndPlay(clip: string): Promise<void> {
+  private async loadAndPlay(clip: string, token: number): Promise<void> {
     try {
       const lottie = await import('lottie-web');
-      if (this.currentClip !== clip) return;
+      if (this.loadToken !== token || this.currentClip !== clip || !this.playing || !this.container) return;
 
-      this.container!.innerHTML = '';
+      this.container.innerHTML = '';
       this.animationInstance = lottie.default.loadAnimation({
-        container: this.container!,
+        container: this.container,
         renderer: 'svg',
         loop: this.loop,
         autoplay: true,
@@ -78,7 +81,9 @@ export class AnimationPlayer implements AnimationControl {
       });
     } catch {
       // Animation asset not found — keep state consistent
-      this.playing = false;
+      if (this.loadToken === token) {
+        this.playing = false;
+      }
     }
   }
 }

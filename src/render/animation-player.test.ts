@@ -1,7 +1,28 @@
-import { describe, it, expect, vi } from 'vitest';
+/**
+ * @vitest-environment jsdom
+ */
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AnimationPlayer } from './animation-player';
 
+const { loadAnimationMock } = vi.hoisted(() => ({
+  loadAnimationMock: vi.fn(),
+}));
+
+vi.mock('lottie-web', () => ({
+  default: {
+    loadAnimation: loadAnimationMock,
+  },
+}));
+
 describe('AnimationPlayer', () => {
+  beforeEach(() => {
+    loadAnimationMock.mockReset();
+    loadAnimationMock.mockReturnValue({
+      destroy: vi.fn(),
+      addEventListener: vi.fn(),
+    });
+  });
+
   it('should track current clip name', () => {
     const player = new AnimationPlayer();
     player.play('idle');
@@ -37,5 +58,16 @@ describe('AnimationPlayer', () => {
     player.setLoop(false);
     player.play('jump');
     expect(player.isPlaying()).toBe(true);
+  });
+
+  it('should not start a pending animation after stop', async () => {
+    const container = document.createElement('div');
+    const player = new AnimationPlayer(container);
+
+    player.play('idle');
+    player.stop();
+    await vi.dynamicImportSettled();
+
+    expect(loadAnimationMock).not.toHaveBeenCalled();
   });
 });

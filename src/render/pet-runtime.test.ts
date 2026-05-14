@@ -13,20 +13,25 @@ function createPetElement(): HTMLElement {
 }
 
 describe('PetRuntime', () => {
-  it('should enter drag and render the pet at the dragged mouse position', () => {
+  it('should enter drag and render the pet without losing the grab offset', () => {
     const pet = createPetElement();
     const runtime = createPetRuntime(pet, {
       viewport: { width: 1000, height: 800 },
       animation: { play: vi.fn(), stop: vi.fn(), setLoop: vi.fn() },
     });
 
-    pet.dispatchEvent(new MouseEvent('mousedown', { clientX: 500, clientY: 720, bubbles: true }));
+    pet.dispatchEvent(new MouseEvent('mousedown', { clientX: 500, clientY: 760, bubbles: true }));
+    runtime.step(16);
+
+    expect(pet.style.left).toBe('460px');
+    expect(pet.style.top).toBe('720px');
+
     document.dispatchEvent(new MouseEvent('mousemove', { clientX: 620, clientY: 640, bubbles: true }));
     runtime.step(16);
 
     expect(runtime.getCurrentBehaviorId()).toBe('drag');
     expect(pet.style.left).toBe('580px');
-    expect(pet.style.top).toBe('560px');
+    expect(pet.style.top).toBe('600px');
 
     runtime.destroy();
   });

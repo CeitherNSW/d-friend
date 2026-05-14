@@ -64,12 +64,11 @@ function clamp(value: number, min: number, max: number): number {
 export function createPetRuntime(pet: HTMLElement, options: PetRuntimeOptions = {}): PetRuntime {
   const eventBus = new EventBus();
   const registry = new BehaviorRegistry();
-  const mouseBridge = new MouseBridge(eventBus);
-  const animation = options.animation ?? new AnimationPlayer(pet);
   let viewport = getViewport(options);
   let dragging = false;
   let frameId: number | null = null;
   let lastFrameTime = 0;
+  const animation = options.animation ?? new AnimationPlayer(pet);
 
   registry.register(new IdleBehavior());
   registry.register(new WalkBehavior());
@@ -92,6 +91,9 @@ export function createPetRuntime(pet: HTMLElement, options: PetRuntimeOptions = 
   };
 
   const stateMachine = new BehaviorStateMachine(registry, ctx, eventBus);
+  const mouseBridge = new MouseBridge(eventBus, {
+    getAnchorPosition: () => ({ ...ctx.position }),
+  });
 
   function render(): void {
     const size = getPetSize(pet);
