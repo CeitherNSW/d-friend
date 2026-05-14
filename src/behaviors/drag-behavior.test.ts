@@ -60,4 +60,33 @@ describe('DragBehavior', () => {
     expect(behavior.canTransitionTo('idle')).toBe(false);
     expect(behavior.canTransitionTo('walk')).toBe(false);
   });
+
+  it('should remove mouse listeners on exit', () => {
+    const behavior = new DragBehavior();
+    const ctx = createCtx();
+    behavior.enter(ctx);
+    behavior.exit(ctx);
+
+    ctx.eventBus.emit('mouse:move', { x: 700, y: 300 });
+    ctx.eventBus.emit('mouse:up', { x: 700, y: 300, velocityX: 0, velocityY: 0 });
+
+    expect(ctx.position).toEqual({ x: 500, y: 500 });
+    expect(ctx.requestTransition).not.toHaveBeenCalled();
+  });
+
+  it('should compute velocity from the previous mouse sample', () => {
+    const nowSpy = vi.spyOn(Date, 'now');
+    nowSpy.mockReturnValueOnce(0);
+    const behavior = new DragBehavior();
+    const ctx = createCtx();
+    behavior.enter(ctx);
+
+    nowSpy.mockReturnValueOnce(100);
+    ctx.eventBus.emit('mouse:move', { x: 700, y: 500 });
+    nowSpy.mockReturnValueOnce(200);
+    ctx.eventBus.emit('mouse:move', { x: 720, y: 500 });
+
+    expect(ctx.velocity.x).toBe(200);
+    nowSpy.mockRestore();
+  });
 });

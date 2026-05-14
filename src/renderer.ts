@@ -1,11 +1,25 @@
-const pet = document.getElementById('pet')!;
+import { createPetRuntime } from './render/pet-runtime';
 
-pet.addEventListener('mouseenter', () => {
-  (window as any).electronAPI?.setIgnoreMouseEvents(false);
+declare global {
+  interface Window {
+    electronAPI?: {
+      setIgnoreMouseEvents(ignore: boolean): void;
+    };
+  }
+}
+
+const pet = document.getElementById('pet')!;
+const runtime = createPetRuntime(pet, {
+  mousePassthrough: window.electronAPI,
 });
 
-pet.addEventListener('mouseleave', () => {
-  (window as any).electronAPI?.setIgnoreMouseEvents(true);
+runtime.start();
+
+window.addEventListener('resize', () => {
+  runtime.setViewport({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 });
 
 console.log('d-friend renderer loaded');

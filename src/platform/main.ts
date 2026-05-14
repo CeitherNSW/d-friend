@@ -1,16 +1,19 @@
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import path from 'path';
+import { registerMousePassthroughIpc } from './mouse-passthrough-ipc';
 
 let mainWindow: BrowserWindow | null = null;
 
+registerMousePassthroughIpc(ipcMain, () => mainWindow);
+
 function createWindow() {
-  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+  const { x, y, width, height } = screen.getPrimaryDisplay().workArea;
 
   mainWindow = new BrowserWindow({
     width,
     height,
-    x: 0,
-    y: 0,
+    x,
+    y,
     transparent: true,
     frame: false,
     alwaysOnTop: true,

@@ -7,6 +7,10 @@ export class DragBehavior implements Behavior {
   private lastX = 0;
   private lastY = 0;
   private lastTime = 0;
+  private mouseMoveHandler: ((payload: { x: number; y: number }) => void) | null = null;
+  private mouseUpHandler:
+    | ((payload: { x: number; y: number; velocityX: number; velocityY: number }) => void)
+    | null = null;
 
   enter(ctx: BehaviorContext): void {
     ctx.velocity.x = 0;
@@ -16,9 +20,11 @@ export class DragBehavior implements Behavior {
     this.lastX = ctx.position.x;
     this.lastY = ctx.position.y;
     this.lastTime = Date.now();
+    this.mouseMoveHandler = (payload) => this.handleMouseMove(ctx, payload);
+    this.mouseUpHandler = (payload) => this.handleMouseUp(ctx, payload);
 
-    ctx.eventBus.on('mouse:move', this.handleMouseMove.bind(this, ctx));
-    ctx.eventBus.on('mouse:up', this.handleMouseUp.bind(this, ctx));
+    ctx.eventBus.on('mouse:move', this.mouseMoveHandler);
+    ctx.eventBus.on('mouse:up', this.mouseUpHandler);
   }
 
   update(_ctx: BehaviorContext, _dt: number): void {
@@ -26,8 +32,14 @@ export class DragBehavior implements Behavior {
   }
 
   exit(ctx: BehaviorContext): void {
-    ctx.eventBus.off('mouse:move', this.handleMouseMove.bind(this, ctx));
-    ctx.eventBus.off('mouse:up', this.handleMouseUp.bind(this, ctx));
+    if (this.mouseMoveHandler) {
+      ctx.eventBus.off('mouse:move', this.mouseMoveHandler);
+      this.mouseMoveHandler = null;
+    }
+    if (this.mouseUpHandler) {
+      ctx.eventBus.off('mouse:up', this.mouseUpHandler);
+      this.mouseUpHandler = null;
+    }
   }
 
   canTransitionTo(nextId: string): boolean {
@@ -39,14 +51,16 @@ export class DragBehavior implements Behavior {
     const dt = Math.max(1, now - this.lastTime);
     ctx.velocity.x = ((payload.x - this.lastX) / dt) * 1000;
     ctx.velocity.y = ((payload.y - this.lastY) / dt) * 1000;
-    this.lastX = ctx.position.x;
-    this.lastY = ctx.position.y;
+    this.lastX = payload.x;
+    this.lastY = payload.y;
     this.lastTime = now;
     ctx.position.x = payload.x;
     ctx.position.y = payload.y;
   }
 
-  private handleMouseUp(ctx: BehaviorContext, _payload: { x: number; y: number; velocityX: number; velocityY: number }): void {
+  private handleMouseUp(ctx: BehaviorContext, payload: { x: number; y: number; velocityX: number; velocityY: number }): void {
+    ctx.velocity.x = payload.velocityX;
+    ctx.velocity.y = payload.velocityY;
     ctx.requestTransition('fall', 'drag-release');
   }
 }
