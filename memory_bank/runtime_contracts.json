@@ -1,0 +1,47 @@
+{
+  "config": {
+    "store": "src/platform/config-store.ts",
+    "file": "app.getPath('userData')/config.json",
+    "rendererAccess": "window.electronAPI.getConfig() via src/platform/config-ipc.ts and src/platform/preload.ts",
+    "defaultKeys": [
+      "idle.minDurationMs",
+      "idle.maxDurationMs",
+      "walk.speedPxPerSecond",
+      "walk.minDurationMs",
+      "walk.maxDurationMs",
+      "jump.velocityYPxPerSecond",
+      "jump.gravityPxPerSecondSquared",
+      "fall.gravityPxPerSecondSquared",
+      "fall.bounceDamping",
+      "fall.bounceThresholdPxPerSecond",
+      "scheduler.intervalMs",
+      "scheduler.interactionPauseMs",
+      "scheduler.weights.idle",
+      "scheduler.weights.walk",
+      "scheduler.weights.jump",
+      "scheduler.cooldowns.jump",
+      "petting.clickDelayMs",
+      "petting.durationMs"
+    ]
+  },
+  "interaction": {
+    "singleClick": "MouseBridge emits click; PetRuntime delays by petting.clickDelayMs, enters PettingBehavior, plays happy, then returns to previous behavior.",
+    "doubleClick": "MouseBridge emits dblclick; PetRuntime cancels pending single-click reaction and requests JumpBehavior.",
+    "rightClick": "MouseBridge emits contextmenu with cursor coordinates; PetRuntime calls window.electronAPI.showPetContextMenu.",
+    "dragStart": "MouseBridge emits mouse:down only after pointer movement crosses the drag threshold, preventing normal clicks from entering drag/fall first.",
+    "contextMenu": "src/platform/pet-context-menu-ipc.ts builds Electron Menu entries: Exit, Hide 30min, Settings."
+  },
+  "scheduler": {
+    "class": "src/core/behavior-scheduler.ts",
+    "defaultWeights": {
+      "idle": 60,
+      "walk": 30,
+      "jump": 10
+    },
+    "cooldowns": {
+      "jumpMs": 20000
+    },
+    "interactionPauseMs": 3000,
+    "runtimeIntegration": "PetRuntime starts BehaviorScheduler and calls update(dt) on each step; click and drag interactions call pauseAfterInteraction()."
+  }
+}

@@ -1,8 +1,10 @@
 import { EventBus } from '../core/event-bus';
 import { BehaviorRegistry } from '../core/behavior-registry';
 import { BehaviorStateMachine } from '../core/state-machine';
+import { BehaviorScheduler, SchedulerWeight } from '../core/behavior-scheduler';
+import { ConfigReader, DEFAULT_PET_CONFIG, createObjectConfigReader } from '../core/config';
 import { AnimationControl, BehaviorContext, ScreenBounds } from '../core/types';
-import { DragBehavior, FallBehavior, IdleBehavior, JumpBehavior, WalkBehavior } from '../behaviors';
+import { DragBehavior, FallBehavior, IdleBehavior, JumpBehavior, PettingBehavior, WalkBehavior } from '../behaviors';
 import { AnimationPlayer } from './animation-player';
 import { MouseBridge } from './mouse-bridge';
 
@@ -15,10 +17,16 @@ interface MousePassthroughControl {
   setIgnoreMouseEvents(ignore: boolean): void;
 }
 
+interface SystemMenuControl {
+  showPetContextMenu(position: { x: number; y: number }): void;
+}
+
 export interface PetRuntimeOptions {
   viewport?: ViewportSize;
   animation?: AnimationControl;
   mousePassthrough?: MousePassthroughControl;
+  systemMenu?: SystemMenuControl;
+  config?: ConfigReader;
 }
 
 export interface PetRuntime {
@@ -68,13 +76,17 @@ export function createPetRuntime(pet: HTMLElement, options: PetRuntimeOptions = 
   let dragging = false;
   let frameId: number | null = null;
   let lastFrameTime = 0;
+  let pettingReturnBehaviorId = 'idle';
+  let pendingClickTimer: ReturnType<typeof setTimeout> | null = null;
   const animation = options.animation ?? new AnimationPlayer(pet);
+  const config = options.config ?? createObjectConfigReader(DEFAULT_PET_CONFIG);
 
   registry.register(new IdleBehavior());
   registry.register(new WalkBehavior());
   registry.register(new JumpBehavior());
   registry.register(new DragBehavior());
   registry.register(new FallBehavior());
+  registry.register(new PettingBehavior(() => pettingReturnBehaviorId));
 
   pet.style.position = 'absolute';
   pet.style.transform = 'none';
@@ -85,12 +97,22 @@ export function createPetRuntime(pet: HTMLElement, options: PetRuntimeOptions = 
     velocity: { x: 0, y: 0 },
     animation,
     eventBus,
+    config,
     bounds: computeBounds(viewport, pet),
     elapsed: 0,
     requestTransition: () => false,
   };
 
   const stateMachine = new BehaviorStateMachine(registry, ctx, eventBus);
+  const scheduler = new BehaviorScheduler(
+    stateMachine,
+    getSchedulerWeights(config),
+    config.get('scheduler.intervalMs', DEFAULT_PET_CONFIG.scheduler.intervalMs),
+    {
+      cooldowns: config.get('scheduler.cooldowns', DEFAULT_PET_CONFIG.scheduler.cooldowns),
+      interactionPauseMs: config.get('scheduler.interactionPauseMs', DEFAULT_PET_CONFIG.scheduler.interactionPauseMs),
+    },
+  );
   const mouseBridge = new MouseBridge(eventBus, {
     getAnchorPosition: () => ({ ...ctx.position }),
   });
@@ -118,6 +140,8 @@ export function createPetRuntime(pet: HTMLElement, options: PetRuntimeOptions = 
 
   const handleMouseDown = (payload: { x: number; y: number }): void => {
     dragging = true;
+    cancelPendingClick();
+    scheduler.pauseAfterInteraction();
     options.mousePassthrough?.setIgnoreMouseEvents(false);
     ctx.position.x = clamp(payload.x, ctx.bounds.left, ctx.bounds.right);
     ctx.position.y = clamp(payload.y, ctx.bounds.top + getPetSize(pet).height, ctx.bounds.groundY);
@@ -127,20 +151,60 @@ export function createPetRuntime(pet: HTMLElement, options: PetRuntimeOptions = 
 
   const handleMouseUp = (): void => {
     dragging = false;
+    scheduler.pauseAfterInteraction();
     options.mousePassthrough?.setIgnoreMouseEvents(true);
   };
+
+  const handleClick = (): void => {
+    if (dragging) return;
+
+    cancelPendingClick();
+    pendingClickTimer = setTimeout(() => {
+      const currentBehaviorId = stateMachine.getCurrentBehavior()?.id ?? 'idle';
+      pettingReturnBehaviorId = currentBehaviorId === 'petting' ? pettingReturnBehaviorId : currentBehaviorId;
+      scheduler.pauseAfterInteraction();
+      stateMachine.requestTransition('petting', 'click');
+      render();
+      pendingClickTimer = null;
+    }, config.get('petting.clickDelayMs', DEFAULT_PET_CONFIG.petting.clickDelayMs));
+  };
+
+  const handleDoubleClick = (): void => {
+    cancelPendingClick();
+    scheduler.pauseAfterInteraction();
+    stateMachine.requestTransition('jump', 'double-click');
+    render();
+  };
+
+  const handleContextMenu = (payload: { x: number; y: number }): void => {
+    cancelPendingClick();
+    scheduler.pauseAfterInteraction();
+    options.systemMenu?.showPetContextMenu(payload);
+  };
+
+  function cancelPendingClick(): void {
+    if (pendingClickTimer !== null) {
+      clearTimeout(pendingClickTimer);
+      pendingClickTimer = null;
+    }
+  }
 
   pet.addEventListener('mouseenter', handleMouseEnter);
   pet.addEventListener('mouseleave', handleMouseLeave);
   eventBus.on('mouse:down', handleMouseDown);
   eventBus.on('mouse:up', handleMouseUp);
+  eventBus.on('click', handleClick);
+  eventBus.on('dblclick', handleDoubleClick);
+  eventBus.on('contextmenu', handleContextMenu);
   mouseBridge.attach(pet);
   stateMachine.start('idle');
+  scheduler.start();
   render();
 
   const runtime: PetRuntime = {
     ctx,
     step(dt: number): void {
+      scheduler.update(dt);
       stateMachine.update(dt);
       render();
     },
@@ -156,13 +220,18 @@ export function createPetRuntime(pet: HTMLElement, options: PetRuntimeOptions = 
       frameId = requestAnimationFrame(tick);
     },
     destroy(): void {
+      cancelPendingClick();
       if (frameId !== null) {
         cancelAnimationFrame(frameId);
         frameId = null;
       }
+      scheduler.stop();
       mouseBridge.detach();
       eventBus.off('mouse:down', handleMouseDown);
       eventBus.off('mouse:up', handleMouseUp);
+      eventBus.off('click', handleClick);
+      eventBus.off('dblclick', handleDoubleClick);
+      eventBus.off('contextmenu', handleContextMenu);
       pet.removeEventListener('mouseenter', handleMouseEnter);
       pet.removeEventListener('mouseleave', handleMouseLeave);
       eventBus.clear();
@@ -180,4 +249,21 @@ export function createPetRuntime(pet: HTMLElement, options: PetRuntimeOptions = 
   };
 
   return runtime;
+}
+
+function getSchedulerWeights(config: ConfigReader): SchedulerWeight[] {
+  return [
+    {
+      behaviorId: 'idle',
+      weight: config.get('scheduler.weights.idle', DEFAULT_PET_CONFIG.scheduler.weights.idle),
+    },
+    {
+      behaviorId: 'walk',
+      weight: config.get('scheduler.weights.walk', DEFAULT_PET_CONFIG.scheduler.weights.walk),
+    },
+    {
+      behaviorId: 'jump',
+      weight: config.get('scheduler.weights.jump', DEFAULT_PET_CONFIG.scheduler.weights.jump),
+    },
+  ];
 }

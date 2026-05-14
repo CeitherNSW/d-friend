@@ -4,4 +4,6 @@ export { BehaviorRegistry } from './behavior-registry';
 export { BehaviorStateMachine } from './state-machine';
 export { BehaviorScheduler } from './behavior-scheduler';
 export { ScreenBoundsProvider } from './screen-bounds';
+export { DEFAULT_PET_CONFIG, createObjectConfigReader, getConfigValue } from './config';
+export type { ConfigReader, ConfigValue, PetConfig } from './config';
 export type { Behavior, BehaviorContext, Position, Velocity, AnimationControl, ScreenBounds } from './types';

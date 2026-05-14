@@ -35,6 +35,44 @@
 - US-014: 自动启动与系统托盘
 - US-015: 配置持久化
 
+## Iteration 4 - 2026-05-14
+
+### Completed Stories
+- US-013: Click responses
+  - Single click plays a `happy` petting reaction, then returns to the previous behavior.
+  - Double click cancels pending petting and triggers `JumpBehavior`.
+  - Right click opens the Electron pet context menu with Exit, Hide 30min, and Settings.
+  - Drag starts only after pointer movement crosses a small threshold, so normal clicks do not trigger drag/fall first.
+- US-014: Automatic behavior scheduler
+  - Default weights are Idle 60 / Walk 30 / Jump 10.
+  - Scheduler supports weighted distribution, jump cooldown, and pause after click/drag interaction.
+  - Scheduler is integrated into `PetRuntime` and remains independent from concrete behavior classes.
+- US-015: Config persistence
+  - `ConfigStore` writes `config.json` under Electron `app.getPath('userData')`.
+  - Config API supports `get`, `set`, and `onChange`.
+  - Preload/config IPC exposes config to the renderer.
+  - Idle, walk, jump, and fall behavior parameters read from runtime config.
+
+### Test Results
+- 98 tests passing (19 test files)
+- Typecheck clean
+- Production build passes
+- Lint remains blocked by missing ESLint 9 flat config (`eslint.config.*`)
+
+### Files Created
+- src/behaviors/petting-behavior.ts
+- src/core/config.ts
+- src/platform/config-store.ts
+- src/platform/config-store.test.ts
+- src/platform/config-ipc.ts
+- src/platform/config-ipc.test.ts
+- src/platform/pet-context-menu-ipc.ts
+- src/platform/pet-context-menu-ipc.test.ts
+
+### Next Up
+- US-017: Multi-screen and dynamic bounds updates
+- US-018: Game loop and idle performance baseline
+
 ## Iteration 3 - 2026-05-14
 
 ### Completed Stories
@@ -58,8 +96,7 @@
 - src/platform/tray-controller.test.ts
 
 ### Next Up
-- US-013: Click responses (single click / double click / right-click menu)
-- US-015: ConfigStore persistence
+- US-017: Multi-screen and dynamic bounds updates
 - US-018: Game loop and idle performance baseline
 
 ## Iteration 2 — 2025-05-13

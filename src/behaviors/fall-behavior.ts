@@ -17,28 +17,32 @@ export class FallBehavior implements Behavior {
   }
 
   update(ctx: BehaviorContext, dt: number): void {
+    const gravity = ctx.config?.get('fall.gravityPxPerSecondSquared', GRAVITY) ?? GRAVITY;
+    const bounceDamping = ctx.config?.get('fall.bounceDamping', BOUNCE_DAMPING) ?? BOUNCE_DAMPING;
+    const bounceThreshold =
+      ctx.config?.get('fall.bounceThresholdPxPerSecond', BOUNCE_THRESHOLD) ?? BOUNCE_THRESHOLD;
     const dtSec = dt / 1000;
-    ctx.velocity.y += GRAVITY * dtSec;
+    ctx.velocity.y += gravity * dtSec;
     ctx.position.y += ctx.velocity.y * dtSec;
     ctx.position.x += ctx.velocity.x * dtSec;
 
     if (ctx.position.x < ctx.bounds.left) {
       ctx.position.x = ctx.bounds.left;
-      ctx.velocity.x = Math.abs(ctx.velocity.x) * BOUNCE_DAMPING;
+      ctx.velocity.x = Math.abs(ctx.velocity.x) * bounceDamping;
     } else if (ctx.position.x > ctx.bounds.right) {
       ctx.position.x = ctx.bounds.right;
-      ctx.velocity.x = -Math.abs(ctx.velocity.x) * BOUNCE_DAMPING;
+      ctx.velocity.x = -Math.abs(ctx.velocity.x) * bounceDamping;
     }
 
     if (ctx.position.y >= ctx.bounds.groundY) {
       ctx.position.y = ctx.bounds.groundY;
-      if (Math.abs(ctx.velocity.y) < BOUNCE_THRESHOLD) {
+      if (Math.abs(ctx.velocity.y) < bounceThreshold) {
         ctx.velocity.y = 0;
         ctx.velocity.x = 0;
         ctx.requestTransition('idle', 'fall-settled');
       } else {
-        ctx.velocity.y = -Math.abs(ctx.velocity.y) * BOUNCE_DAMPING;
-        ctx.velocity.x *= BOUNCE_DAMPING;
+        ctx.velocity.y = -Math.abs(ctx.velocity.y) * bounceDamping;
+        ctx.velocity.x *= bounceDamping;
         this.bounceCount++;
       }
     }

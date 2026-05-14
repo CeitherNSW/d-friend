@@ -10,15 +10,16 @@ export class JumpBehavior implements Behavior {
   private grounded = false;
 
   enter(ctx: BehaviorContext): void {
-    ctx.velocity.y = JUMP_VELOCITY_Y;
+    ctx.velocity.y = ctx.config?.get('jump.velocityYPxPerSecond', JUMP_VELOCITY_Y) ?? JUMP_VELOCITY_Y;
     ctx.animation.play('jump');
     ctx.animation.setLoop(false);
     this.grounded = false;
   }
 
   update(ctx: BehaviorContext, dt: number): void {
+    const gravity = ctx.config?.get('jump.gravityPxPerSecondSquared', GRAVITY) ?? GRAVITY;
     const dtSec = dt / 1000;
-    ctx.velocity.y += GRAVITY * dtSec;
+    ctx.velocity.y += gravity * dtSec;
     ctx.position.y += ctx.velocity.y * dtSec;
     ctx.position.x += ctx.velocity.x * dtSec;
 

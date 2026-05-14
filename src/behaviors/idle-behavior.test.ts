@@ -54,6 +54,26 @@ describe('IdleBehavior', () => {
     expect(ctx.requestTransition).not.toHaveBeenCalled();
   });
 
+  it('should read duration settings from config', () => {
+    const behavior = new IdleBehavior();
+    const ctx = createCtx({
+      config: {
+        get: vi.fn((key: string, fallback: number) => {
+          if (key === 'idle.minDurationMs') return 50;
+          if (key === 'idle.maxDurationMs') return 50;
+          return fallback;
+        }),
+      } as any,
+    } as Partial<BehaviorContext>);
+
+    behavior.enter(ctx);
+    behavior.update(ctx, 49);
+    expect(ctx.requestTransition).not.toHaveBeenCalled();
+    behavior.update(ctx, 1);
+
+    expect(ctx.requestTransition).toHaveBeenCalledWith('walk', 'idle-timeout');
+  });
+
   it('should allow transition to any behavior', () => {
     const behavior = new IdleBehavior();
     expect(behavior.canTransitionTo('walk')).toBe(true);

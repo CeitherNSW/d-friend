@@ -23,6 +23,11 @@
       background: radial-gradient(circle, #ffb347, #ff6f61);
       box-shadow: 0 4px 12px rgba(255, 111, 97, 0.4);
       cursor: grab;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    #pet[data-behavior="petting"] {
+      background: radial-gradient(circle, #f8a0c8, #e8709a);
+      box-shadow: 0 4px 12px rgba(232, 112, 154, 0.5);
     }
     #pet[data-behavior="idle"] {
       animation: idle-breathing 2.4s ease-in-out infinite;

@@ -1,4 +1,5 @@
 import { EventBus } from './event-bus';
+import { ConfigReader } from './config';
 
 export interface Position {
   x: number;
@@ -29,6 +30,7 @@ export interface BehaviorContext {
   velocity: Velocity;
   animation: AnimationControl;
   eventBus: EventBus;
+  config?: ConfigReader;
   bounds: ScreenBounds;
   elapsed: number;
   requestTransition: (id: string, reason: string) => void;

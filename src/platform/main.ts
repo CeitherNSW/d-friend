@@ -2,9 +2,13 @@ import { app, BrowserWindow, ipcMain, Menu, nativeImage, screen, Tray } from 'el
 import path from 'path';
 import { registerMousePassthroughIpc } from './mouse-passthrough-ipc';
 import { createTrayController, TrayController } from './tray-controller';
+import { ConfigStore, DEFAULT_PET_CONFIG } from './config-store';
+import { registerConfigIpc } from './config-ipc';
+import { registerPetContextMenuIpc } from './pet-context-menu-ipc';
 
 let mainWindow: BrowserWindow | null = null;
 let trayController: TrayController | null = null;
+let configStore: ConfigStore | null = null;
 
 registerMousePassthroughIpc(ipcMain, () => mainWindow);
 
@@ -76,6 +80,22 @@ function createTray() {
 }
 
 app.whenReady().then(() => {
+  configStore = new ConfigStore(app, DEFAULT_PET_CONFIG);
+  registerConfigIpc(ipcMain, configStore);
+  registerPetContextMenuIpc(ipcMain, Menu, {
+    getWindow: () => mainWindow,
+    onExit: () => {
+      if (trayController) {
+        trayController.requestQuit();
+      } else {
+        app.quit();
+      }
+    },
+    onHideFor30Minutes: () => {
+      mainWindow?.hide();
+    },
+    onSettings: () => {},
+  });
   createWindow();
   createTray();
 });

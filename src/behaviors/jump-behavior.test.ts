@@ -23,6 +23,24 @@ describe('JumpBehavior', () => {
     expect(ctx.velocity.y).toBe(-400);
   });
 
+  it('should read jump settings from config', () => {
+    const behavior = new JumpBehavior();
+    const ctx = createCtx({
+      config: {
+        get: vi.fn((key: string, fallback: number) => {
+          if (key === 'jump.velocityYPxPerSecond') return -600;
+          if (key === 'jump.gravityPxPerSecondSquared') return 1000;
+          return fallback;
+        }),
+      } as any,
+    } as Partial<BehaviorContext>);
+
+    behavior.enter(ctx);
+    expect(ctx.velocity.y).toBe(-600);
+    behavior.update(ctx, 100);
+    expect(ctx.velocity.y).toBe(-500);
+  });
+
   it('should play jump animation on enter', () => {
     const behavior = new JumpBehavior();
     const ctx = createCtx();

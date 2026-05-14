@@ -215,8 +215,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 13,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2026-05-14. Added click/dblclick/contextmenu MouseBridge events, PettingBehavior happy reaction with return to previous behavior, double-click JumpBehavior trigger, and Electron Menu IPC context menu with Exit / Hide 30min / Settings. Covered by jsdom and platform IPC tests."
     },
     {
       "id": "US-014",
@@ -232,8 +232,8 @@
         "Typecheck passes"
       ],
       "priority": 14,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2026-05-14. Enhanced BehaviorScheduler with PRD default weights (Idle 60 / Walk 30 / Jump 10), weighted distribution test, per-behavior cooldowns, interaction pause, and PetRuntime integration. Scheduler remains standalone and imports no concrete behaviors."
     },
     {
       "id": "US-015",
@@ -247,8 +247,8 @@
         "Typecheck passes"
       ],
       "priority": 15,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Completed 2026-05-14. Added ConfigStore persisted to app.getPath('userData')/config.json with get/set/onChange, default config generation, config IPC/preload bridge, and behavior parameter reads for idle, walk, jump, and fall."
     },
     {
       "id": "US-016",

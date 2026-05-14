@@ -11,12 +11,14 @@ export class IdleBehavior implements Behavior {
   private targetDuration = 0;
 
   enter(ctx: BehaviorContext): void {
+    const minDuration = ctx.config?.get('idle.minDurationMs', IDLE_MIN_DURATION) ?? IDLE_MIN_DURATION;
+    const maxDuration = ctx.config?.get('idle.maxDurationMs', IDLE_MAX_DURATION) ?? IDLE_MAX_DURATION;
     ctx.velocity.x = 0;
     ctx.velocity.y = 0;
     ctx.animation.play('idle');
     ctx.animation.setLoop(true);
     this.duration = 0;
-    this.targetDuration = IDLE_MIN_DURATION + Math.random() * (IDLE_MAX_DURATION - IDLE_MIN_DURATION);
+    this.targetDuration = minDuration + Math.random() * (maxDuration - minDuration);
   }
 
   update(ctx: BehaviorContext, dt: number): void {

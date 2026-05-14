@@ -32,6 +32,26 @@ describe('FallBehavior', () => {
     expect(ctx.position.y).toBeGreaterThan(500);
   });
 
+  it('should read fall physics settings from config', () => {
+    const behavior = new FallBehavior();
+    const ctx = createCtx({
+      config: {
+        get: vi.fn((key: string, fallback: number) => {
+          if (key === 'fall.gravityPxPerSecondSquared') return 1000;
+          if (key === 'fall.bounceDamping') return 0.5;
+          if (key === 'fall.bounceThresholdPxPerSecond') return 40;
+          return fallback;
+        }),
+      } as any,
+    } as Partial<BehaviorContext>);
+
+    behavior.enter(ctx);
+    behavior.update(ctx, 100);
+
+    expect(ctx.velocity.y).toBe(100);
+    expect(ctx.position.y).toBe(510);
+  });
+
   it('should bounce when hitting ground with high velocity', () => {
     const behavior = new FallBehavior();
     const ctx = createCtx({ position: { x: 500, y: 1050 }, velocity: { x: 0, y: 200 } });

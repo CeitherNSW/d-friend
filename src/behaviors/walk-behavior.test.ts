@@ -30,6 +30,26 @@ describe('WalkBehavior', () => {
     expect(Math.abs(ctx.velocity.x)).toBe(80);
   });
 
+  it('should read movement settings from config', () => {
+    const behavior = new WalkBehavior();
+    const ctx = createCtx({
+      config: {
+        get: vi.fn((key: string, fallback: number) => {
+          if (key === 'walk.speedPxPerSecond') return 120;
+          if (key === 'walk.minDurationMs') return 50;
+          if (key === 'walk.maxDurationMs') return 50;
+          return fallback;
+        }),
+      } as any,
+    } as Partial<BehaviorContext>);
+
+    behavior.enter(ctx);
+
+    expect(Math.abs(ctx.velocity.x)).toBe(120);
+    behavior.update(ctx, 50);
+    expect(ctx.requestTransition).toHaveBeenCalledWith('idle', 'walk-timeout');
+  });
+
   it('should move position on update', () => {
     const behavior = new WalkBehavior();
     const ctx = createCtx();
