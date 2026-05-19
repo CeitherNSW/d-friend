@@ -6,3 +6,4 @@ out/
 .DS_Store
 Thumbs.db
 src/rawmt
+release/

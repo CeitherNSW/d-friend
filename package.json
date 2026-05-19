@@ -10,7 +10,9 @@
     "lint": "eslint src/",
     "test": "vitest run",
     "test:watch": "vitest",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win"
   },
   "keywords": [
     "desktop-pet",
@@ -34,5 +36,20 @@
   },
   "dependencies": {
     "lottie-web": "^5.12.2"
+  },
+  "build": {
+    "appId": "com.dfriend.app",
+    "productName": "d-friend",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "portable",
+      "signAndEditExecutable": false
+    }
   }
 }
