@@ -1,0 +1,28 @@
+{
+  "id": "british-blue-shorthair-drawn",
+  "name": "British Blue Shorthair",
+  "author": "Codex image generation from user British Shorthair references in src/rawMT and DefaultCat action style",
+  "canvas_width": 1254,
+  "canvas_height": 1254,
+  "default_anchor": {
+    "x": 0.5,
+    "y": 0.88
+  },
+  "poses": {
+    "resting": "poses/resting",
+    "held": "poses/held",
+    "dialogue": "poses/dialogue",
+    "transition": "poses/transition"
+  },
+  "animations": {
+    "walk": {
+      "fps": 3,
+      "frames": [
+        "animations/walk/walk_01.png",
+        "animations/walk/walk_02.png",
+        "animations/walk/walk_03.png",
+        "animations/walk/walk_04.png"
+      ]
+    }
+  }
+}

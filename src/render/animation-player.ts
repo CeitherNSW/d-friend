@@ -11,10 +11,13 @@ export interface SpriteFrame {
 export interface SpriteManifest {
   frameDurationMs?: number;
   clips: Record<string, SpriteFrame[]>;
+  clipVariants?: Record<string, SpriteFrame[][]>;
+  randomFlipClips?: string[];
 }
 
 export interface AnimationPlayerOptions {
   spriteManifest?: SpriteManifest | null;
+  random?: () => number;
 }
 
 export class AnimationPlayer implements AnimationControl {
@@ -30,12 +33,14 @@ export class AnimationPlayer implements AnimationControl {
   private spriteFrameIndex = 0;
   private spriteImage: HTMLImageElement | null = null;
   private spriteTimer: ReturnType<typeof setTimeout> | null = null;
+  private random: () => number = Math.random;
 
   constructor(container?: HTMLElement, options: AnimationPlayerOptions = {}) {
     this.container = container ?? null;
     this.spriteManifest = options.spriteManifest === undefined
       ? DEFAULT_SPRITE_MANIFEST
       : options.spriteManifest;
+    this.random = options.random ?? Math.random;
   }
 
   setContainer(container: HTMLElement): void {
@@ -92,7 +97,7 @@ export class AnimationPlayer implements AnimationControl {
   }
 
   private playSpriteClip(clip: string, token: number): boolean {
-    const frames = this.spriteManifest?.clips[clip];
+    const frames = this.getSpriteFrames(clip);
     if (!frames?.length || !this.container) return false;
 
     this.clearLottieAnimation();
@@ -113,6 +118,9 @@ export class AnimationPlayer implements AnimationControl {
       pointerEvents: 'none',
       userSelect: 'none',
     });
+    if (this.shouldRandomlyFlip(clip)) {
+      this.spriteImage.style.transform = 'scaleX(-1)';
+    }
     this.container.appendChild(this.spriteImage);
     this.renderSpriteFrame();
 
@@ -121,6 +129,21 @@ export class AnimationPlayer implements AnimationControl {
     }
 
     return true;
+  }
+
+  private getSpriteFrames(clip: string): SpriteFrame[] | undefined {
+    const variants = this.spriteManifest?.clipVariants?.[clip]?.filter((frames) => frames.length > 0);
+    if (variants?.length) {
+      const index = Math.min(variants.length - 1, Math.floor(this.random() * variants.length));
+      return variants[index];
+    }
+
+    return this.spriteManifest?.clips[clip];
+  }
+
+  private shouldRandomlyFlip(clip: string): boolean {
+    if (!this.spriteManifest?.randomFlipClips?.includes(clip)) return false;
+    return this.random() >= 0.5;
   }
 
   private advanceSpriteFrame(token: number): void {

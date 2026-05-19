@@ -10,10 +10,10 @@ describe('idle breathing style', () => {
     expect(html).toContain('animation: idle-breathing');
   });
 
-  it('should flip the sprite frame when walking to the right', () => {
+  it('should flip the sprite frame when walking to the left', () => {
     const html = readFileSync('index.html', 'utf8');
 
-    expect(html).toContain('#pet[data-direction="right"] .pet-sprite-frame');
+    expect(html).toContain('#pet[data-behavior="walk"][data-direction="left"] .pet-sprite-frame');
     expect(html).toContain('scaleX(-1)');
   });
 });

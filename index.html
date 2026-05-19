@@ -16,8 +16,8 @@
       bottom: 0;
       left: 50%;
       transform-origin: 50% 100%;
-      width: 96px;
-      height: 168px;
+      width: 140px;
+      height: 140px;
       cursor: grab;
       overflow: visible;
       filter: drop-shadow(0 6px 10px rgba(70, 35, 20, 0.24));
@@ -37,7 +37,7 @@
       image-rendering: auto;
       transform-origin: 50% 50%;
     }
-    #pet[data-direction="right"] .pet-sprite-frame {
+    #pet[data-behavior="walk"][data-direction="left"] .pet-sprite-frame {
       transform: scaleX(-1);
     }
     @keyframes idle-breathing {

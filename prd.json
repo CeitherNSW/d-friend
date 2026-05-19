@@ -35,7 +35,7 @@
       ],
       "priority": 2,
       "passes": true,
-      "notes": "Completed 2025-05-13; updated 2026-05-14. AnimationPlayer supports sprite-first PNG frame playback with lottie-web fallback, play/stop/setLoop/onComplete API, and renderer sprite mounting tests."
+      "notes": "Completed 2025-05-13; updated 2026-05-19. AnimationPlayer supports sprite-first PNG frame playback, random clip variants, lottie-web fallback, play/stop/setLoop/onComplete API, and renderer sprite mounting tests. Default runtime now uses the generated British Blue Shorthair sprite set."
     },
     {
       "id": "US-003",
@@ -116,7 +116,7 @@
       ],
       "priority": 7,
       "passes": true,
-      "notes": "Completed 2025-05-13. IdleBehavior with random timeout (3-8s) then transition to walk. 5 unit tests."
+      "notes": "Completed 2025-05-13; updated 2026-05-19. IdleBehavior with random timeout (3-8s) then transition to walk. Default idle visuals now choose randomly from multiple British Blue Shorthair resting sprite variants."
     },
     {
       "id": "US-008",
@@ -134,7 +134,7 @@
       ],
       "priority": 8,
       "passes": true,
-      "notes": "Completed 2025-05-13; updated 2026-05-14. WalkBehavior with edge detection, direction flip, random duration, and renderer sprite mirroring for right-facing walk."
+      "notes": "Completed 2025-05-13; updated 2026-05-19. WalkBehavior with edge detection, direction flip, random duration, and renderer sprite mirroring for left-facing walk because the current British Blue Shorthair walk sprites face right by default."
     },
     {
       "id": "US-009",
@@ -169,7 +169,7 @@
       ],
       "priority": 10,
       "passes": true,
-      "notes": "Completed 2025-05-13. DragBehavior with priority 100, mouse tracking, velocity calculation, transition to fall. 6 unit tests."
+      "notes": "Completed 2025-05-13; updated 2026-05-19. DragBehavior with priority 100, mouse tracking, velocity calculation, transition to fall, and generated British Blue Shorthair held-pose visual binding."
     },
     {
       "id": "US-011",

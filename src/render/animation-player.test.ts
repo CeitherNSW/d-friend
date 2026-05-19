@@ -108,6 +108,51 @@ describe('AnimationPlayer', () => {
     expect(loadAnimationMock).not.toHaveBeenCalled();
   });
 
+  it('should choose a random sprite variant for a matching clip', async () => {
+    const container = document.createElement('div');
+    const player = new AnimationPlayer(container, {
+      spriteManifest: {
+        frameDurationMs: 120,
+        clips: {},
+        clipVariants: {
+          idle: [
+            [{ src: '/sprites/idle_loaf.png' }],
+            [{ src: '/sprites/idle_side.png' }],
+            [{ src: '/sprites/idle_curled.png' }],
+          ],
+        },
+      } as SpriteManifest,
+      random: () => 0.8,
+    });
+
+    player.play('idle');
+    await vi.dynamicImportSettled();
+
+    expect(container.querySelector('img')?.getAttribute('src')).toBe('/sprites/idle_curled.png');
+    expect(loadAnimationMock).not.toHaveBeenCalled();
+  });
+
+  it('should randomly mirror configured non-walk sprite clips', async () => {
+    const container = document.createElement('div');
+    const player = new AnimationPlayer(container, {
+      spriteManifest: {
+        frameDurationMs: 120,
+        clips: {
+          happy: [
+            { src: '/sprites/stand.png' },
+          ],
+        },
+        randomFlipClips: ['happy'],
+      },
+      random: () => 0.75,
+    });
+
+    player.play('happy');
+    await vi.dynamicImportSettled();
+
+    expect((container.querySelector('img') as HTMLImageElement | null)?.style.transform).toBe('scaleX(-1)');
+  });
+
   it('should advance sprite frames while looping', () => {
     vi.useFakeTimers();
     const container = document.createElement('div');
